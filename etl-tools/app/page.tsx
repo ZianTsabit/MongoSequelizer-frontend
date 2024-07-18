@@ -90,12 +90,12 @@ export default function Home() {
             });
             result = await response.json();
             setPostgreMessage({
-              ...mongoMessage,
+              ...postgreMessage,
               text: result.message, 
               success: result.success});
           } catch (error) {
             setPostgreMessage({
-              ...mongoMessage,
+              ...postgreMessage,
               text: "connection failed", 
               success: false});
           }
