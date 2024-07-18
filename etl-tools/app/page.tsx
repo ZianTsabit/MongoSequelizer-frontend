@@ -29,7 +29,7 @@ export default function Home() {
 
       <div className="h-screen flex items-center justify-center">
         <Tabs defaultValue="MongoDB" className="w-[400px]">
-          <TabsList>
+          <TabsList className="w-full">
             <TabsTrigger value="MongoDB">MongoDB</TabsTrigger>
             <TabsTrigger value="PostgreSQL">PostgreSQL</TabsTrigger>
             <TabsTrigger value="Evaluate">Evaluate</TabsTrigger>
