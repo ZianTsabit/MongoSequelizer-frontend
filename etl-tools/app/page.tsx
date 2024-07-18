@@ -33,8 +33,12 @@ export default function Home() {
   const [postgreUser, setPostgreUser] = useState("");
   const [postgrePassword, setPostgrePassword] = useState("");
 
-  const handleSubmit = (tab) => {
+  const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
+  const [postgreMessage, setPostgreMessage] = useState({text: "", success: false});
+
+  const handleSubmit = async (tab) => {
     let valid = true;
+    let response, result;
     switch (tab) {
       case "MongoDB":
         if (!mongoUri || !mongoDatabase) {
@@ -42,8 +46,21 @@ export default function Home() {
           alert("Please fill in all required fields for MongoDB.");
         }
         if (valid) {
-          console.log("MongoDB URI:", mongoUri);
-          console.log("MongoDB Database:", mongoDatabase);
+          // console.log("MongoDB URI:", mongoUri);
+          // console.log("MongoDB Database:", mongoDatabase);
+          try {
+            response = await fetch("http://localhost:9000/mongo-test-connection", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ uri: mongoUri, database: mongoDatabase }),
+            });
+            result = await response.json();
+            setMongoMessage({text: result.message, success: result.success});
+          } catch (error) {
+            setMongoMessage({text: "Error connecting to MongoDB", success: false});
+          }
         }
         break;
       case "PostgreSQL":
@@ -52,11 +69,24 @@ export default function Home() {
           alert("Please fill in all required fields for PostgreSQL.");
         }
         if (valid) {
-          console.log("PostgreSQL Host:", postgreHost);
-          console.log("PostgreSQL Port:", postgrePort);
-          console.log("PostgreSQL Database:", postgreDatabase);
-          console.log("PostgreSQL User:", postgreUser);
-          console.log("PostgreSQL Password:", postgrePassword);
+          // console.log("PostgreSQL Host:", postgreHost);
+          // console.log("PostgreSQL Port:", postgrePort);
+          // console.log("PostgreSQL Database:", postgreDatabase);
+          // console.log("PostgreSQL User:", postgreUser);
+          // console.log("PostgreSQL Password:", postgrePassword);
+          try {
+            response = await fetch("http://localhost:9000/postgre-test-connection", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ host: postgreHost, port: postgrePort, database: postgreDatabase, user: postgreUser, password: postgrePassword }),
+            });
+            result = await response.json();
+            setPostgreMessage({text: result.message, success: result.success});
+          } catch (error) {
+            setPostgreMessage({text: "Error connecting to PostgreSQL", success: false});
+          }
         }
         break;
       default:
@@ -95,6 +125,7 @@ export default function Home() {
                 </CardContent>
                 <CardFooter>
                   <Button onClick={() => handleSubmit("MongoDB")}>Save & Test Connection</Button>
+                  {mongoMessage.text && <div className={mongoMessage.success ? "text-green-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold ml-2"}>{mongoMessage.text}</div>}
                 </CardFooter>
               </Card>
             </TabsContent>
@@ -131,6 +162,7 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 <Button onClick={() => handleSubmit("PostgreSQL")}>Save & Test Connection</Button>
+                {postgreMessage.text && <div className={postgreMessage.success ? "text-green-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold ml-2"}>{postgreMessage.text}</div>}
               </CardFooter>
             </Card>
           </TabsContent>
