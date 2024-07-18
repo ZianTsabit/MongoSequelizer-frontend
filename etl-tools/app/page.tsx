@@ -57,9 +57,15 @@ export default function Home() {
               body: JSON.stringify({ uri: mongoUri, database: mongoDatabase }),
             });
             result = await response.json();
-            setMongoMessage({text: result.message, success: result.success});
+            setMongoMessage({
+              ...mongoMessage,
+              text: result.message, 
+              success: result.success});
           } catch (error) {
-            setMongoMessage({text: "Error connecting to MongoDB", success: false});
+            setMongoMessage({
+              ...mongoMessage,
+              text: "Error connecting to MongoDB", 
+              success: false});
           }
         }
         break;
@@ -83,9 +89,15 @@ export default function Home() {
               body: JSON.stringify({ host: postgreHost, port: postgrePort, database: postgreDatabase, user: postgreUser, password: postgrePassword }),
             });
             result = await response.json();
-            setPostgreMessage({text: result.message, success: result.success});
+            setPostgreMessage({
+              ...mongoMessage,
+              text: result.message, 
+              success: result.success});
           } catch (error) {
-            setPostgreMessage({text: "Error connecting to PostgreSQL", success: false});
+            setPostgreMessage({
+              ...mongoMessage,
+              text: "connection failed", 
+              success: false});
           }
         }
         break;
