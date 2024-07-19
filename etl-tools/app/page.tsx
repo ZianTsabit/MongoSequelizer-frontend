@@ -51,7 +51,7 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch("http://localhost:9000/mongo-test-connection", {
+            response = await fetch("http://localhost:8000/mongo-test-connection", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -78,7 +78,7 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch("http://localhost:9000/postgre-test-connection", {
+            response = await fetch("http://localhost:8000/postgre-test-connection", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -129,7 +129,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="mongo-port">Port</Label>
-                    <Input id="mongo-port" placeholder="5432" value={mongoPort} onChange={(e) => setMongoPort(e.target.value)} required/>
+                    <Input id="mongo-port" placeholder="27017" value={mongoPort} onChange={(e) => setMongoPort(e.target.value)} required/>
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="mongo-database">DB</Label>
@@ -141,7 +141,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="mongo-password">Password</Label>
-                    <Input id="mongo-password" type="password" placeholder="******" value={postgrePassword} onChange={(e) => setMongoPassword(e.target.value)} required/>
+                    <Input id="mongo-password" type="password" placeholder="******" value={mongoPassword} onChange={(e) => setMongoPassword(e.target.value)} required/>
                   </div>
                 </CardContent>
                 <CardFooter>
