@@ -25,8 +25,12 @@ import {
 
 export default function Home() {
 
-  const [mongoUri, setMongoUri] = useState("");
+  const [mongoHost, setMongoHost] = useState("");
+  const [mongoPort, setMongoPort] = useState("");
   const [mongoDatabase, setMongoDatabase] = useState("");
+  const [mongoUser, setMongoUser] = useState("");
+  const [mongoPassword, setMongoPassword] = useState("");
+
   const [postgreHost, setPostgreHost] = useState("");
   const [postgrePort, setPostgrePort] = useState("");
   const [postgreDatabase, setPostgreDatabase] = useState("");
@@ -41,20 +45,18 @@ export default function Home() {
     let response, result;
     switch (tab) {
       case "MongoDB":
-        if (!mongoUri || !mongoDatabase) {
+        if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
           valid = false;
           alert("Please fill in all required fields for MongoDB.");
         }
         if (valid) {
-          // console.log("MongoDB URI:", mongoUri);
-          // console.log("MongoDB Database:", mongoDatabase);
           try {
             response = await fetch("http://localhost:9000/mongo-test-connection", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ uri: mongoUri, database: mongoDatabase }),
+              body: JSON.stringify({ host: mongoHost, port: mongoPort, database: mongoDatabase, user: mongoUser, password: mongoPassword }),
             });
             result = await response.json();
             setMongoMessage({
@@ -75,11 +77,6 @@ export default function Home() {
           alert("Please fill in all required fields for PostgreSQL.");
         }
         if (valid) {
-          // console.log("PostgreSQL Host:", postgreHost);
-          // console.log("PostgreSQL Port:", postgrePort);
-          // console.log("PostgreSQL Database:", postgreDatabase);
-          // console.log("PostgreSQL User:", postgreUser);
-          // console.log("PostgreSQL Password:", postgrePassword);
           try {
             response = await fetch("http://localhost:9000/postgre-test-connection", {
               method: "POST",
@@ -127,12 +124,24 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <div className="space-y-1">
-                    <Label htmlFor="uri">URI</Label>
-                    <Input id="uri" placeholder="mongodb://localhost:27017" value={mongoUri} onChange={(e) => setMongoUri(e.target.value)} required/>
+                    <Label htmlFor="mongo-host">Host</Label>
+                    <Input id="mongo-host" placeholder="localhost" value={mongoHost} onChange={(e) => setMongoHost(e.target.value)} required/>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="mongo-port">Port</Label>
+                    <Input id="mongo-port" placeholder="5432" value={mongoPort} onChange={(e) => setMongoPort(e.target.value)} required/>
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="mongo-database">DB</Label>
                     <Input id="mongo-database" placeholder="my-db" value={mongoDatabase} onChange={(e) => setMongoDatabase(e.target.value)} required/>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="mongo-user">Username</Label>
+                    <Input id="mongo-user" placeholder="admin" value={mongoUser} onChange={(e) => setMongoUser(e.target.value)} required/>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="mongo-password">Password</Label>
+                    <Input id="mongo-password" type="password" placeholder="******" value={postgrePassword} onChange={(e) => setMongoPassword(e.target.value)} required/>
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -152,12 +161,12 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="host">Host</Label>
-                  <Input id="host" placeholder="localhost" value={postgreHost} onChange={(e) => setPostgreHost(e.target.value)} required/>
+                  <Label htmlFor="postgre-host">Host</Label>
+                  <Input id="postgre-host" placeholder="localhost" value={postgreHost} onChange={(e) => setPostgreHost(e.target.value)} required/>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="port">Port</Label>
-                  <Input id="port" placeholder="5432" value={postgrePort} onChange={(e) => setPostgrePort(e.target.value)} required/>
+                  <Label htmlFor="postgre-port">Port</Label>
+                  <Input id="postgre-port" placeholder="5432" value={postgrePort} onChange={(e) => setPostgrePort(e.target.value)} required/>
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="postgre-database">DB</Label>
@@ -190,8 +199,10 @@ export default function Home() {
               <CardContent className="space-y-4">
               <div className="space-y-1">
                   <Label className="text-lg">MongoDB Configuration</Label>
-                  <p><strong>URI:</strong> {mongoUri}</p>
+                  <p><strong>Host:</strong> {mongoHost}</p>
+                  <p><strong>Port:</strong> {mongoPort}</p>
                   <p><strong>DB:</strong> {mongoDatabase}</p>
+                  <p><strong>Username:</strong> {mongoUser}</p>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-lg">PostgreSQL Configuration</Label>
