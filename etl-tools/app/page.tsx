@@ -213,7 +213,15 @@ export default function Home() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button>Start Transformation</Button>
+                <div>
+                  <Button>Start Transformation</Button>
+                  <div>
+                      Creating schema ...
+                  </div>
+                  <div>
+                      Loading data ...
+                  </div>
+                </div>
               </CardFooter>
             </Card>
           </TabsContent>
