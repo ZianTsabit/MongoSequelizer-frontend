@@ -133,11 +133,13 @@ export default function Home() {
               }),
             });
             result = await response.json();
+            setShow((pre) => !pre);
             setSchemaMessage({
               ...schemaMessage,
               text: result.message, 
               success: result.success});
           } catch (error) {
+            setShow((pre) => !pre);
             setSchemaMessage({
               ...schemaMessage,
               text: "Schema transformation failed", 
