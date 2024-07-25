@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button"
 
+import { Spinner } from "@/components/ui/spinner"
+
 import {
   Card,
   CardContent,
@@ -40,7 +42,10 @@ export default function Home() {
   const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
   const [postgreMessage, setPostgreMessage] = useState({text: "", success: false});
 
-  const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
+  const [loading, setLoading] = useState(true)
+  const [show, setShow] = useState(false)
+
+  const [schemaMessage, setSchemaMessage] = useState({text: "Creating schema on progress", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
 
   const handleSubmit = async (tab) => {
@@ -256,13 +261,10 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 <div>
-                  <Button>Start Transformation</Button>
-                  <div>
-                      Creating schema ...
-                  </div>
-                  <div>
-                      Loading data ...
-                  </div>
+                  <Button onClick={() => setShow((pre) => !pre)}>Start Transformation</Button>
+                  <Spinner className="my-2" color='yellow' size="small" show={show}>
+                    {schemaMessage.text && <div className={schemaMessage.success ? "text-green-1000 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{schemaMessage.text}</div>}
+                  </Spinner>
                 </div>
               </CardFooter>
             </Card>
