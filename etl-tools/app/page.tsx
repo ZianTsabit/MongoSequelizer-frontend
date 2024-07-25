@@ -40,6 +40,9 @@ export default function Home() {
   const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
   const [postgreMessage, setPostgreMessage] = useState({text: "", success: false});
 
+  const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
+  const [etlMessage, setEtlMessage] = useState({text: "", success: false});
+
   const handleSubmit = async (tab) => {
     let valid = true;
     let response, result;
@@ -94,6 +97,45 @@ export default function Home() {
             setPostgreMessage({
               ...postgreMessage,
               text: "connection failed", 
+              success: false});
+          }
+        }
+        break;
+      case "TransformSchema":
+        if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword || !postgreHost || !postgrePort || !postgreDatabase || !postgreUser || !postgrePassword) {
+          valid = false;
+          alert("Please fill in all required fields for PostgreSQL.");
+        }
+        if (valid) {
+          try {
+            response = await fetch("http://localhost:8000/generate-schema-from-mongo-to-postgres", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                mongo_host: mongoHost,
+                mongo_port: mongoPort,
+                mongo_database: mongoDatabase,
+                mongo_user: mongoUser,
+                mongo_password: mongoPassword, 
+                postgre_host: postgreHost, 
+                postgre_port: postgrePort, 
+                postgre_database: postgreDatabase, 
+                postgre_user: postgreUser, 
+                postgre_password: postgrePassword
+                
+              }),
+            });
+            result = await response.json();
+            setSchemaMessage({
+              ...schemaMessage,
+              text: result.message, 
+              success: result.success});
+          } catch (error) {
+            setSchemaMessage({
+              ...schemaMessage,
+              text: "Schema transformation failed", 
               success: false});
           }
         }
