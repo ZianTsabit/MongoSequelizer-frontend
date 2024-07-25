@@ -195,7 +195,7 @@ export default function Home() {
                 </CardContent>
                 <CardFooter>
                   <Button onClick={() => handleSubmit("MongoDB")}>Save & Test Connection</Button>
-                  {mongoMessage.text && <div className={mongoMessage.success ? "text-green-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold ml-2"}>{mongoMessage.text}</div>}
+                  {mongoMessage.text && <div className={mongoMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{mongoMessage.text}</div>}
                 </CardFooter>
               </Card>
             </TabsContent>
@@ -232,7 +232,7 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 <Button onClick={() => handleSubmit("PostgreSQL")}>Save & Test Connection</Button>
-                {postgreMessage.text && <div className={postgreMessage.success ? "text-green-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold ml-2"}>{postgreMessage.text}</div>}
+                {postgreMessage.text && <div className={postgreMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{postgreMessage.text}</div>}
               </CardFooter>
             </Card>
           </TabsContent>
@@ -270,9 +270,9 @@ export default function Home() {
                     Start Transformation
                   </Button>
                   <Spinner className="my-2" color='yellow' size="small" show={show}>
-                    {loadingMessage.text && <div className={loadingMessage.success ? "text-green-1000 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingMessage.text}</div>}
+                    {loadingMessage.text && <div className={loadingMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingMessage.text}</div>}
                   </Spinner>
-                  {schemaMessage.text && <div className={schemaMessage.success ? "text-green-1000 text-sm font-semibold my-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
+                  {schemaMessage.text && <div className={schemaMessage.success ? "text-green-600 text-sm font-semibold my-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
                 </div>
               </CardFooter>
             </Card>
