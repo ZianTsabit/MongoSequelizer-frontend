@@ -261,7 +261,12 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 <div>
-                  <Button onClick={() => setShow((pre) => !pre)}>Start Transformation</Button>
+                  <Button onClick={() => {
+                    handleSubmit("TransformSchema");
+                    setShow((pre) => !pre);
+                  }}>
+                    Start Transformation
+                  </Button>
                   <Spinner className="my-2" color='yellow' size="small" show={show}>
                     {schemaMessage.text && <div className={schemaMessage.success ? "text-green-1000 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{schemaMessage.text}</div>}
                   </Spinner>
