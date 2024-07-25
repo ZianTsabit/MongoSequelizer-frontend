@@ -42,10 +42,10 @@ export default function Home() {
   const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
   const [postgreMessage, setPostgreMessage] = useState({text: "", success: false});
 
-  const [loading, setLoading] = useState(true)
   const [show, setShow] = useState(false)
 
-  const [schemaMessage, setSchemaMessage] = useState({text: "Creating schema on progress", success: false});
+  const [loadingMessage, setLoadingMessage] = useState({text: "Schema creation is in progress", success: false});
+  const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
 
   const handleSubmit = async (tab) => {
@@ -142,7 +142,7 @@ export default function Home() {
             setShow((pre) => !pre);
             setSchemaMessage({
               ...schemaMessage,
-              text: "Schema transformation failed", 
+              text: result.message, 
               success: false});
           }
         }
@@ -270,8 +270,9 @@ export default function Home() {
                     Start Transformation
                   </Button>
                   <Spinner className="my-2" color='yellow' size="small" show={show}>
-                    {schemaMessage.text && <div className={schemaMessage.success ? "text-green-1000 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{schemaMessage.text}</div>}
+                    {loadingMessage.text && <div className={loadingMessage.success ? "text-green-1000 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingMessage.text}</div>}
                   </Spinner>
+                  {schemaMessage.text && <div className={schemaMessage.success ? "text-green-1000 text-sm font-semibold my-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
                 </div>
               </CardFooter>
             </Card>
