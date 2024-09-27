@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import * as React from "react"
+
 import { Button } from "@/components/ui/button"
 
 import { Spinner } from "@/components/ui/spinner"
@@ -14,6 +16,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -213,8 +225,18 @@ export default function Home() {
               <CardContent className="space-y-2">
 
                 <div className="space-y-1">
-                  <Label htmlFor="rdbms-host">Host</Label>
-                  <Input id="rdbms-host" placeholder="localhost" value={rdbmsHost} onChange={(e) => setRdbmsHost(e.target.value)} required/>
+                  <Label htmlFor="rdbms-type">Type</Label>
+                  <Select>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select your RDBMS" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="mysql">MySQL</SelectItem>
+                        <SelectItem value="postgresql">PostgreSQL</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-1">
