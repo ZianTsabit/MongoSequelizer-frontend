@@ -33,14 +33,15 @@ export default function Home() {
   const [mongoUser, setMongoUser] = useState("");
   const [mongoPassword, setMongoPassword] = useState("");
 
-  const [postgreHost, setPostgreHost] = useState("");
-  const [postgrePort, setPostgrePort] = useState("");
-  const [postgreDatabase, setPostgreDatabase] = useState("");
-  const [postgreUser, setPostgreUser] = useState("");
-  const [postgrePassword, setPostgrePassword] = useState("");
+  const [rdbmsType, setRdbmsType] = useState("")
+  const [rdbmsHost, setRdbmsHost] = useState("");
+  const [rdbmsPort, setRdbmsPort] = useState("");
+  const [rdbmsDatabase, setRdbmsDatabase] = useState("");
+  const [rdbmsUser, setRdbmsUser] = useState("");
+  const [rdbmsPassword, setRdbmsPassword] = useState("");
 
   const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
-  const [postgreMessage, setPostgreMessage] = useState({text: "", success: false});
+  const [rdbmsMessage, setRdbmsMessage] = useState({text: "", success: false});
 
   const [show, setShow] = useState(false)
 
@@ -48,7 +49,7 @@ export default function Home() {
   const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
 
-  const handleSubmit = async (tab) => {
+  const handleSubmit = async (tab: string) => {
     let valid = true;
     let response, result;
     switch (tab) {
@@ -79,10 +80,10 @@ export default function Home() {
           }
         }
         break;
-      case "PostgreSQL":
-        if (!postgreHost || !postgrePort || !postgreDatabase || !postgreUser || !postgrePassword) {
+      case "RDBMS":
+        if (!rdbmsType || !rdbmsHost || !rdbmsPort || !rdbmsDatabase || !rdbmsUser || !rdbmsPassword) {
           valid = false;
-          alert("Please fill in all required fields for PostgreSQL.");
+          alert("Please fill in all required fields for RDBMS.");
         }
         if (valid) {
           try {
@@ -91,23 +92,23 @@ export default function Home() {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ host: postgreHost, port: postgrePort, database: postgreDatabase, user: postgreUser, password: postgrePassword }),
+              body: JSON.stringify({ type: rdbmsType, host: rdbmsHost, port: rdbmsPort, database: rdbmsDatabase, user: rdbmsUser, password: rdbmsPassword }),
             });
             result = await response.json();
-            setPostgreMessage({
-              ...postgreMessage,
+            setRdbmsMessage({
+              ...rdbmsMessage,
               text: result.message, 
               success: result.success});
           } catch (error) {
-            setPostgreMessage({
-              ...postgreMessage,
+            setRdbmsMessage({
+              ...rdbmsMessage,
               text: "connection failed", 
               success: false});
           }
         }
         break;
       case "TransformSchema":
-        if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword || !postgreHost || !postgrePort || !postgreDatabase || !postgreUser || !postgrePassword) {
+        if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword || !rdbmsType || !rdbmsHost || !rdbmsPort || !rdbmsDatabase || !rdbmsUser || !rdbmsPassword) {
           valid = false;
           alert("Please fill in all required fields for PostgreSQL.");
         }
@@ -123,12 +124,13 @@ export default function Home() {
                 mongo_port: mongoPort,
                 mongo_database: mongoDatabase,
                 mongo_user: mongoUser,
-                mongo_password: mongoPassword, 
-                postgre_host: postgreHost, 
-                postgre_port: postgrePort, 
-                postgre_database: postgreDatabase, 
-                postgre_user: postgreUser, 
-                postgre_password: postgrePassword
+                mongo_password: mongoPassword,
+                rdbms_type: rdbmsType, 
+                postgre_host: rdbmsHost, 
+                postgre_port: rdbmsPort, 
+                postgre_database: rdbmsDatabase, 
+                postgre_user: rdbmsUser, 
+                postgre_password: rdbmsPassword
                 
               }),
             });
@@ -159,7 +161,7 @@ export default function Home() {
         <Tabs defaultValue="MongoDB" className="w-[400px]">
           <TabsList className="w-full">
             <TabsTrigger value="MongoDB">MongoDB</TabsTrigger>
-            <TabsTrigger value="PostgreSQL">PostgreSQL</TabsTrigger>
+            <TabsTrigger value="RDBMS">RDBMS</TabsTrigger>
             <TabsTrigger value="Evaluate">Evaluate</TabsTrigger>
           </TabsList>
 
@@ -200,39 +202,45 @@ export default function Home() {
               </Card>
             </TabsContent>
           
-          <TabsContent value="PostgreSQL" className="h-80">
+          <TabsContent value="RDBMS" className="h-80">
             <Card>
               <CardHeader>
-                <CardTitle>PostgreSQL</CardTitle>
+                <CardTitle>RDBMS</CardTitle>
                 <CardDescription>
-                  Configuration for PostgreSQL Destination
+                  Configuration for RDBMS Destination
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
+
                 <div className="space-y-1">
-                  <Label htmlFor="postgre-host">Host</Label>
-                  <Input id="postgre-host" placeholder="localhost" value={postgreHost} onChange={(e) => setPostgreHost(e.target.value)} required/>
+                  <Label htmlFor="rdbms-host">Host</Label>
+                  <Input id="rdbms-host" placeholder="localhost" value={rdbmsHost} onChange={(e) => setRdbmsHost(e.target.value)} required/>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="rdbms-host">Host</Label>
+                  <Input id="rdbms-host" placeholder="localhost" value={rdbmsHost} onChange={(e) => setRdbmsHost(e.target.value)} required/>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="postgre-port">Port</Label>
-                  <Input id="postgre-port" placeholder="5432" value={postgrePort} onChange={(e) => setPostgrePort(e.target.value)} required/>
+                  <Label htmlFor="rdbms-port">Port</Label>
+                  <Input id="rdbms-port" placeholder="5432" value={rdbmsPort} onChange={(e) => setRdbmsPort(e.target.value)} required/>
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="postgre-database">DB</Label>
-                  <Input id="postgre-database" placeholder="my-db" value={postgreDatabase} onChange={(e) => setPostgreDatabase(e.target.value)} required/>
+                  <Input id="rdbms-database" placeholder="my-db" value={rdbmsDatabase} onChange={(e) => setRdbmsDatabase(e.target.value)} required/>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="postgre-user">Username</Label>
-                  <Input id="postgre-user" placeholder="admin" value={postgreUser} onChange={(e) => setPostgreUser(e.target.value)} required/>
+                  <Label htmlFor="rdbms-user">Username</Label>
+                  <Input id="rdbms-user" placeholder="admin" value={rdbmsUser} onChange={(e) => setRdbmsUser(e.target.value)} required/>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="postgre-password">Password</Label>
-                  <Input id="postgre-password" type="password" placeholder="******" value={postgrePassword} onChange={(e) => setPostgrePassword(e.target.value)} required/>
+                  <Label htmlFor="rdbms-password">Password</Label>
+                  <Input id="rdbms-password" type="password" placeholder="******" value={rdbmsPassword} onChange={(e) => setRdbmsPassword(e.target.value)} required/>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={() => handleSubmit("PostgreSQL")}>Save & Test Connection</Button>
-                {postgreMessage.text && <div className={postgreMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{postgreMessage.text}</div>}
+                <Button onClick={() => handleSubmit("RDBMS")}>Save & Test Connection</Button>
+                {rdbmsMessage.text && <div className={rdbmsMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{rdbmsMessage.text}</div>}
               </CardFooter>
             </Card>
           </TabsContent>
@@ -255,10 +263,10 @@ export default function Home() {
                 </div>
                 <div className="space-y-1">
                   <Label className="text-lg">PostgreSQL Configuration</Label>
-                  <p><strong>Host:</strong> {postgreHost}</p>
-                  <p><strong>Port:</strong> {postgrePort}</p>
-                  <p><strong>DB:</strong> {postgreDatabase}</p>
-                  <p><strong>Username:</strong> {postgreUser}</p>
+                  <p><strong>Host:</strong> {rdbmsHost}</p>
+                  <p><strong>Port:</strong> {rdbmsPort}</p>
+                  <p><strong>DB:</strong> {rdbmsDatabase}</p>
+                  <p><strong>Username:</strong> {rdbmsUser}</p>
                 </div>
               </CardContent>
               <CardFooter>
