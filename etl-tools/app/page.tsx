@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import * as React from "react"
 
+import Image from 'next/image';
+
 import { Button } from "@/components/ui/button"
 
 import { Spinner } from "@/components/ui/spinner"
@@ -180,7 +182,17 @@ export default function Home() {
           <TabsContent value="MongoDB" className="h-80">
             <Card>
                 <CardHeader>
-                  <CardTitle>MongoDB</CardTitle>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Image
+                      src="/assets/mongodb-logo.png"
+                      alt="MongoDB"
+                      width={40}
+                      height={40}
+                      style={{ marginRight: '8px' }}
+                    />
+                    <CardTitle>MongoDB</CardTitle>
+                  </div>
+                  
                   <CardDescription>
                     Configuration for MongoDB Source
                   </CardDescription>
@@ -217,7 +229,16 @@ export default function Home() {
           <TabsContent value="RDBMS" className="h-80">
             <Card>
               <CardHeader>
-                <CardTitle>RDBMS</CardTitle>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Image
+                    src="/assets/rdbms-logo.png"
+                    alt="RDBMS"
+                    width={40}
+                    height={40}
+                    style={{ marginRight: '8px' }}
+                  />
+                  <CardTitle>RDBMS</CardTitle>
+                </div>
                 <CardDescription>
                   Configuration for RDBMS Destination
                 </CardDescription>
@@ -232,8 +253,30 @@ export default function Home() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="mysql">MySQL</SelectItem>
-                        <SelectItem value="postgresql">PostgreSQL</SelectItem>
+                        <SelectItem value="mysql">
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Image
+                              src="/assets/logo-mysql.png"
+                              alt="MySQL"
+                              width={20}
+                              height={20}
+                              style={{ marginRight: '8px' }}
+                            />
+                            MySQL
+                          </div>
+                          </SelectItem>
+                        <SelectItem value="postgresql">
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Image
+                                src="/assets/postgre.png"
+                                alt="MySQL"
+                                width={20}
+                                height={20}
+                                style={{ marginRight: '8px' }}
+                              />
+                              PostgreSQL
+                            </div>
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -284,7 +327,8 @@ export default function Home() {
                   <p><strong>Username:</strong> {mongoUser}</p>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-lg">PostgreSQL Configuration</Label>
+                  <Label className="text-lg">RDBMS Configuration</Label>
+                  <p><strong>Type:</strong> {rdbmsType}</p>
                   <p><strong>Host:</strong> {rdbmsHost}</p>
                   <p><strong>Port:</strong> {rdbmsPort}</p>
                   <p><strong>DB:</strong> {rdbmsDatabase}</p>
