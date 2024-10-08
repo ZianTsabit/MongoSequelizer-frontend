@@ -73,18 +73,20 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch("http://localhost:8000/mongo-test-connection", {
+            response = await fetch("http://localhost:7000/api/mongodb/test-connection", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ host: mongoHost, port: mongoPort, database: mongoDatabase, user: mongoUser, password: mongoPassword }),
+              body: JSON.stringify({ host: mongoHost, port: mongoPort, db: mongoDatabase, username: mongoUser, password: mongoPassword }),
             });
             result = await response.json();
+            console.log(result)
             setMongoMessage({
               ...mongoMessage,
               text: result.message, 
-              success: result.success});
+              success: result.status});
+            console.log(mongoMessage)
           } catch (error) {
             setMongoMessage({
               ...mongoMessage,
