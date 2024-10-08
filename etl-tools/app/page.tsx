@@ -62,6 +62,11 @@ export default function Home() {
   const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
 
+  const handleRdbmsTypeChange = (value: string) => {
+    console.log(value)
+    setRdbmsType(value);
+  };
+
   const handleSubmit = async (tab: string) => {
     let valid = true;
     let response, result;
@@ -102,18 +107,18 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch("http://localhost:8000/postgre-test-connection", {
+            response = await fetch(`http://localhost:7000/api/rdbms/test-connection?rdbms_type=${rdbmsType}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ type: rdbmsType, host: rdbmsHost, port: rdbmsPort, database: rdbmsDatabase, user: rdbmsUser, password: rdbmsPassword }),
+              body: JSON.stringify({ host: rdbmsHost, port: rdbmsPort, db: rdbmsDatabase, username: rdbmsUser, password: rdbmsPassword }),
             });
             result = await response.json();
             setRdbmsMessage({
               ...rdbmsMessage,
               text: result.message, 
-              success: result.success});
+              success: result.status});
           } catch (error) {
             setRdbmsMessage({
               ...rdbmsMessage,
@@ -248,7 +253,7 @@ export default function Home() {
 
                 <div className="space-y-1">
                   <Label htmlFor="rdbms-type">Type</Label>
-                  <Select>
+                  <Select onValueChange={handleRdbmsTypeChange}>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Select your RDBMS" />
                     </SelectTrigger>
@@ -270,7 +275,7 @@ export default function Home() {
                           <div style={{ display: 'flex', alignItems: 'center' }}>
                               <Image
                                 src="/assets/postgre.png"
-                                alt="MySQL"
+                                alt="PostgreSQL"
                                 width={20}
                                 height={20}
                                 style={{ marginRight: '8px' }}
