@@ -38,6 +38,16 @@ import {
   TabsTrigger 
 } from "@/components/ui/tabs"
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 import { Separator } from "@/components/ui/separator"
 
 export default function Home() {
@@ -63,6 +73,9 @@ export default function Home() {
   const [loadingMessage, setLoadingMessage] = useState({text: "Schema creation is in progress", success: false});
   const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
+
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [responseData, setResponseData] = useState(null);
 
   const handleRdbmsTypeChange = (value: string) => {
     console.log(value)
@@ -359,8 +372,9 @@ export default function Home() {
               <CardFooter>
                 <div>
                   <Button onClick={() => {
-                    handleSubmit("TransformSchema");
-                    setShow((pre) => !pre);
+                    setDialogOpen(true);
+                    // handleSubmit("TransformSchema");
+                    // setShow((pre) => !pre);
                   }}>
                     Start Transformation
                   </Button>
@@ -373,8 +387,53 @@ export default function Home() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent
+            className="sm:max-w-[950px]"
+            onEscapeKeyDown={(event) => event.preventDefault()}
+            onPointerDownOutside={(event) => event.preventDefault()}
+            >
+            <DialogHeader>
+              <DialogTitle>Transformation Result</DialogTitle>
+            </DialogHeader>
+
+            <div className="flex py-4">
+              <div className="flex-1 pr-4">
+                <Label htmlFor="name" className="text-right">
+                  MongoDB Source Schema
+                </Label>
+                <div>
+                  <p><strong>Host:</strong> {mongoHost}</p>
+                  <p><strong>Port:</strong> {mongoPort}</p>
+                  <p><strong>DB:</strong> {mongoDatabase}</p>
+                  <p><strong>Username:</strong> {mongoUser}</p>
+                </div>
+              </div>
+
+              <div className="border-l border-gray-300 mx-4" style={{ height: 'auto' }}></div>
+
+              <div className="flex-1 pl-4">
+                <Label htmlFor="email" className="text-right">
+                  RDBMS Schema Transformation Results
+                </Label>
+                <div>
+                  <p><strong>Type:</strong> {rdbmsType}</p>
+                  <p><strong>Host:</strong> {rdbmsHost}</p>
+                  <p><strong>Port:</strong> {rdbmsPort}</p>
+                  <p><strong>DB:</strong> {rdbmsDatabase}</p>
+                  <p><strong>Username:</strong> {rdbmsUser}</p>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setDialogOpen(false)}>
+                  Start Data Migration
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
-   
   );
 }
