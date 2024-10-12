@@ -38,6 +38,8 @@ import {
   TabsTrigger 
 } from "@/components/ui/tabs"
 
+import { Separator } from "@/components/ui/separator"
+
 export default function Home() {
 
   const [mongoHost, setMongoHost] = useState("");
@@ -179,6 +181,7 @@ export default function Home() {
     <div className="w-full h-screen flex justify-center mt-40">
       <div>
         <Tabs defaultValue="MongoDB" className="w-[400px]">
+          
           <TabsList className="w-full">
             <TabsTrigger value="MongoDB">MongoDB</TabsTrigger>
             <TabsTrigger value="RDBMS">RDBMS</TabsTrigger>
@@ -186,55 +189,59 @@ export default function Home() {
           </TabsList>
 
           <TabsContent value="MongoDB" className="h-80">
-            <Card>
-                <CardHeader>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image
-                      src="/assets/mongodb-logo.png"
-                      alt="MongoDB"
-                      width={40}
-                      height={40}
-                      style={{ marginRight: '8px' }}
-                    />
-                    <CardTitle>MongoDB</CardTitle>
-                  </div>
-                  
-                  <CardDescription>
-                    Configuration for MongoDB Source
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="mongo-host">Host</Label>
-                    <Input id="mongo-host" placeholder="localhost" value={mongoHost} onChange={(e) => setMongoHost(e.target.value)} required/>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="mongo-port">Port</Label>
-                    <Input id="mongo-port" placeholder="27017" value={mongoPort} onChange={(e) => setMongoPort(e.target.value)} required/>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="mongo-database">DB</Label>
-                    <Input id="mongo-database" placeholder="my-db" value={mongoDatabase} onChange={(e) => setMongoDatabase(e.target.value)} required/>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="mongo-user">Username</Label>
-                    <Input id="mongo-user" placeholder="admin" value={mongoUser} onChange={(e) => setMongoUser(e.target.value)} required/>
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="mongo-password">Password</Label>
-                    <Input id="mongo-password" type="password" placeholder="******" value={mongoPassword} onChange={(e) => setMongoPassword(e.target.value)} required/>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button onClick={() => handleSubmit("MongoDB")}>Save & Test Connection</Button>
-                  {mongoMessage.text && <div className={mongoMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{mongoMessage.text}</div>}
-                </CardFooter>
-              </Card>
-            </TabsContent>
+            <Card >
+              <CardHeader className="py-3 px-6">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Image
+                    src="/assets/mongodb-logo.png"
+                    alt="MongoDB"
+                    width={40}
+                    height={40}
+                    style={{ marginRight: '8px' }}
+                  />
+                  <CardTitle>MongoDB</CardTitle>
+                </div>
+                <CardDescription>
+                  Configuration for MongoDB Source
+                </CardDescription>
+              </CardHeader>
+              <div className="mx-6 mb-2">
+                <Separator />
+              </div>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="mongo-host">Host</Label>
+                  <Input id="mongo-host" placeholder="localhost" value={mongoHost} onChange={(e) => setMongoHost(e.target.value)} required/>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="mongo-port">Port</Label>
+                  <Input id="mongo-port" placeholder="27017" value={mongoPort} onChange={(e) => setMongoPort(e.target.value)} required/>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="mongo-database">DB</Label>
+                  <Input id="mongo-database" placeholder="my-db" value={mongoDatabase} onChange={(e) => setMongoDatabase(e.target.value)} required/>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="mongo-user">Username</Label>
+                  <Input id="mongo-user" placeholder="admin" value={mongoUser} onChange={(e) => setMongoUser(e.target.value)} required/>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="mongo-password">Password</Label>
+                  <Input id="mongo-password" type="password" placeholder="******" value={mongoPassword} onChange={(e) => setMongoPassword(e.target.value)} required/>
+                </div>
+              </CardContent>
+              
+              <CardFooter>
+                <Button onClick={() => handleSubmit("MongoDB")}>Save & Test Connection</Button>
+                {mongoMessage.text && <div className={mongoMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{mongoMessage.text}</div>}
+              </CardFooter>
+              
+            </Card> 
+          </TabsContent>
           
           <TabsContent value="RDBMS" className="h-80">
             <Card>
-              <CardHeader>
+              <CardHeader className="py-3 px-6">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Image
                     src="/assets/rdbms-logo.png"
@@ -249,8 +256,10 @@ export default function Home() {
                   Configuration for RDBMS Destination
                 </CardDescription>
               </CardHeader>
+              <div className="mx-6 mb-2">
+                <Separator />
+              </div>
               <CardContent className="space-y-2">
-
                 <div className="space-y-1">
                   <Label htmlFor="rdbms-type">Type</Label>
                   <Select onValueChange={handleRdbmsTypeChange}>
@@ -318,28 +327,34 @@ export default function Home() {
 
           <TabsContent value="Evaluate" className="h-80">
             <Card>
-              <CardHeader>
+              <CardHeader className="py-3 px-6">
                 <CardTitle>Evaluate</CardTitle>
                 <CardDescription>
                   Evaluate Your Configuration
                 </CardDescription>
               </CardHeader>
+              <div className="mx-6 mb-2">
+                <Separator />
+              </div>
               <CardContent className="space-y-4">
               <div className="space-y-1">
-                  <Label className="text-lg">MongoDB Configuration</Label>
-                  <p><strong>Host:</strong> {mongoHost}</p>
-                  <p><strong>Port:</strong> {mongoPort}</p>
-                  <p><strong>DB:</strong> {mongoDatabase}</p>
-                  <p><strong>Username:</strong> {mongoUser}</p>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-lg">RDBMS Configuration</Label>
-                  <p><strong>Type:</strong> {rdbmsType}</p>
-                  <p><strong>Host:</strong> {rdbmsHost}</p>
-                  <p><strong>Port:</strong> {rdbmsPort}</p>
-                  <p><strong>DB:</strong> {rdbmsDatabase}</p>
-                  <p><strong>Username:</strong> {rdbmsUser}</p>
-                </div>
+                <Label className="text-lg">MongoDB Configuration</Label>
+                <p><strong>Host:</strong> {mongoHost}</p>
+                <p><strong>Port:</strong> {mongoPort}</p>
+                <p><strong>DB:</strong> {mongoDatabase}</p>
+                <p><strong>Username:</strong> {mongoUser}</p>
+              </div>
+              <div>
+                <Separator />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-lg">RDBMS Configuration</Label>
+                <p><strong>Type:</strong> {rdbmsType}</p>
+                <p><strong>Host:</strong> {rdbmsHost}</p>
+                <p><strong>Port:</strong> {rdbmsPort}</p>
+                <p><strong>DB:</strong> {rdbmsDatabase}</p>
+                <p><strong>Username:</strong> {rdbmsUser}</p>
+              </div>
               </CardContent>
               <CardFooter>
                 <div>
