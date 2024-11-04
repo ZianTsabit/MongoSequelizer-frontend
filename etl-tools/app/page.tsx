@@ -193,7 +193,7 @@ export default function Home() {
     }
   };
 
-  const getMongoSchema = async () => {
+  const getRdbmsSchema = async () => {
     let response, result;
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
@@ -236,13 +236,13 @@ export default function Home() {
       }
 
       result = await response.json();
-      setRdbmsSchema(JSON.stringify(result, null, 2));
+      setRdbmsSchema(result);
     } catch (error) {
       console.error("Error fetching MongoDB schema:", error);
     }
   };
 
-  const getRdbmsSchema = async () => {
+  const getMongoSchema = async () => {
     let response, result;
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
@@ -465,8 +465,7 @@ export default function Home() {
                   <Button onClick={() => {
                     setDialogOpen(true);
                     getMongoSchema();
-
-
+                    getRdbmsSchema();
                   }}>
                     Start Transformation
                   </Button>
@@ -500,7 +499,18 @@ export default function Home() {
                     value={mongoSchema}
                     onChange={(e) => setMongoSchema(e.target.value)}
                     readOnly
-                    style={{ height: "250px" }}
+                    style={{
+                      height: "250px",
+                      fontFamily: "Consolas, monospace",
+                      fontSize: "14px",
+                      backgroundColor: "#f4f4f4",
+                      color: "#333",
+                      border: "1px solid #ddd",
+                      borderRadius: "5px",
+                      padding: "10px",
+                      whiteSpace: "pre-wrap",
+                      overflowX: "auto"
+                    }}
                     placeholder="Generating schema..."
                   />
                 </div>
@@ -517,7 +527,18 @@ export default function Home() {
                     value={rdbmsSchema}
                     onChange={(e) => setRdbmsSchema(e.target.value)}
                     readOnly
-                    style={{ height: "250px" }}
+                    style={{
+                      height: "250px",
+                      fontFamily: "Consolas, monospace",
+                      fontSize: "14px",
+                      backgroundColor: "#f4f4f4",
+                      color: "#333",
+                      border: "1px solid #ddd",
+                      borderRadius: "5px",
+                      padding: "10px",
+                      whiteSpace: "pre-wrap",
+                      overflowX: "auto"
+                    }}
                     placeholder="Generating schema..."
                   />
                 </div>
