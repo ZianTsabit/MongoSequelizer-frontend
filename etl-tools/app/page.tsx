@@ -48,6 +48,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
+import { Textarea } from "@/components/ui/textarea"
+
 import { Separator } from "@/components/ui/separator"
 
 export default function Home() {
@@ -57,6 +59,7 @@ export default function Home() {
   const [mongoDatabase, setMongoDatabase] = useState("");
   const [mongoUser, setMongoUser] = useState("");
   const [mongoPassword, setMongoPassword] = useState("");
+  const [mongoSchema, setMongoSchema] = useState("");
 
   const [rdbmsType, setRdbmsType] = useState("")
   const [rdbmsHost, setRdbmsHost] = useState("");
@@ -64,6 +67,7 @@ export default function Home() {
   const [rdbmsDatabase, setRdbmsDatabase] = useState("");
   const [rdbmsUser, setRdbmsUser] = useState("");
   const [rdbmsPassword, setRdbmsPassword] = useState("");
+  const [rdbmsSchema, setRdbmsSchema] = useState("");
 
   const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
   const [rdbmsMessage, setRdbmsMessage] = useState({text: "", success: false});
@@ -93,7 +97,7 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch("http://localhost:7000/api/mongodb/test-connection", {
+            response = await fetch("http://localhost:5000/api/mongodb/test-connection", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -122,7 +126,7 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch(`http://localhost:7000/api/rdbms/test-connection?rdbms_type=${rdbmsType}`, {
+            response = await fetch(`http://localhost:5000/api/rdbms/test-connection?rdbms_type=${rdbmsType}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -186,6 +190,42 @@ export default function Home() {
         break;
       default:
         break;
+    }
+  };
+
+  const getMongoSchema = async () => {
+    let response, result;
+
+    if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
+      alert("Please fill in all required fields for MongoDB.");
+      return;
+    }
+
+    try {
+      response = await fetch("http://localhost:5000/api/mongodb/display-schema", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          host: mongoHost,
+          port: mongoPort,
+          db: mongoDatabase,
+          username: mongoUser,
+          password: mongoPassword,
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to fetch MongoDB schema:", response.statusText);
+        return;
+      }
+
+      result = await response.json();
+      console.log(result);
+      setMongoSchema(JSON.stringify(result, null, 2));
+    } catch (error) {
+      console.error("Error fetching MongoDB schema:", error);
     }
   };
 
@@ -373,8 +413,9 @@ export default function Home() {
                 <div>
                   <Button onClick={() => {
                     setDialogOpen(true);
-                    // handleSubmit("TransformSchema");
-                    // setShow((pre) => !pre);
+                    getMongoSchema();
+
+
                   }}>
                     Start Transformation
                   </Button>
@@ -403,11 +444,14 @@ export default function Home() {
                 <Label htmlFor="name" className="text-right">
                   MongoDB Source Schema
                 </Label>
-                <div>
-                  <p><strong>Host:</strong> {mongoHost}</p>
-                  <p><strong>Port:</strong> {mongoPort}</p>
-                  <p><strong>DB:</strong> {mongoDatabase}</p>
-                  <p><strong>Username:</strong> {mongoUser}</p>
+                <div className="py-2">
+                  <Textarea
+                    value={mongoSchema}
+                    onChange={(e) => setMongoSchema(e.target.value)}
+                    readOnly
+                    style={{ height: "250px" }}
+                    placeholder="Generating schema..."
+                  />
                 </div>
               </div>
 
@@ -417,12 +461,14 @@ export default function Home() {
                 <Label htmlFor="email" className="text-right">
                   RDBMS Schema Transformation Results
                 </Label>
-                <div>
-                  <p><strong>Type:</strong> {rdbmsType}</p>
-                  <p><strong>Host:</strong> {rdbmsHost}</p>
-                  <p><strong>Port:</strong> {rdbmsPort}</p>
-                  <p><strong>DB:</strong> {rdbmsDatabase}</p>
-                  <p><strong>Username:</strong> {rdbmsUser}</p>
+                <div className="py-2">
+                  <Textarea
+                    value={mongoSchema}
+                    onChange={(e) => setMongoSchema(e.target.value)}
+                    readOnly
+                    style={{ height: "250px" }}
+                    placeholder="Generating schema..."
+                  />
                 </div>
               </div>
             </div>
