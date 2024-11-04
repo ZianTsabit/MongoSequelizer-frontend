@@ -201,6 +201,55 @@ export default function Home() {
       return;
     }
 
+    if (!rdbmsType || !rdbmsHost || !rdbmsPort || !rdbmsDatabase || !rdbmsUser || !rdbmsPassword) {
+      alert("Please fill in all required fields for RDBMS.");
+      return;
+    }
+
+    try {
+      response = await fetch(`http://localhost:5000/api/rdbms/display-schema?rdbms_type=${rdbmsType}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "rdbms":{
+            host: rdbmsHost,
+            port: rdbmsPort,
+            db: rdbmsDatabase,
+            username: rdbmsUser,
+            password: rdbmsPassword,
+          },
+          "mongodb":{
+            host: mongoHost,
+            port: mongoPort,
+            db: mongoDatabase,
+            username: mongoUser,
+            password: mongoPassword,
+          }
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to fetch MongoDB schema:", response.statusText);
+        return;
+      }
+
+      result = await response.json();
+      setRdbmsSchema(JSON.stringify(result, null, 2));
+    } catch (error) {
+      console.error("Error fetching MongoDB schema:", error);
+    }
+  };
+
+  const getRdbmsSchema = async () => {
+    let response, result;
+
+    if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
+      alert("Please fill in all required fields for MongoDB.");
+      return;
+    }
+
     try {
       response = await fetch("http://localhost:5000/api/mongodb/display-schema", {
         method: "POST",
@@ -228,6 +277,8 @@ export default function Home() {
       console.error("Error fetching MongoDB schema:", error);
     }
   };
+
+  
 
   return (
 
@@ -463,8 +514,8 @@ export default function Home() {
                 </Label>
                 <div className="py-2">
                   <Textarea
-                    value={mongoSchema}
-                    onChange={(e) => setMongoSchema(e.target.value)}
+                    value={rdbmsSchema}
+                    onChange={(e) => setRdbmsSchema(e.target.value)}
                     readOnly
                     style={{ height: "250px" }}
                     placeholder="Generating schema..."
