@@ -78,7 +78,7 @@ export default function Home() {
   const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
 
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isSchemaPreview, setSchemaPreview] = useState(false);
   const [responseData, setResponseData] = useState(null);
 
   const handleRdbmsTypeChange = (value: string) => {
@@ -108,11 +108,28 @@ export default function Home() {
               ...mongoMessage,
               text: result.message, 
               success: result.status});
+
+            setTimeout(() => {
+              setMongoMessage({
+                ...mongoMessage,
+                text: "",
+                success: false
+              });
+            }, 500);
+
           } catch (error) {
             setMongoMessage({
               ...mongoMessage,
               text: "Error connecting to MongoDB", 
               success: false});
+
+            setTimeout(() => {
+              setMongoMessage({
+                ...mongoMessage,
+                text: "",
+                success: false
+              });
+            }, 500);
           }
         }
         break;
@@ -135,11 +152,29 @@ export default function Home() {
               ...rdbmsMessage,
               text: result.message, 
               success: result.status});
+
+            setTimeout(() => {
+              setRdbmsMessage({
+                ...rdbmsMessage,
+                text: "",
+                success: false
+              });
+            }, 500);
+
           } catch (error) {
             setRdbmsMessage({
               ...rdbmsMessage,
               text: "connection failed", 
               success: false});
+            
+            setTimeout(() => {
+              setRdbmsMessage({
+                ...rdbmsMessage,
+                text: "",
+                success: false
+              });
+            }, 500);
+
           }
         }
         break;
@@ -317,9 +352,9 @@ export default function Home() {
               <CardContent className="space-y-2">
                 <div className="space-y-1">
                   <Label htmlFor="rdbms-type">Type</Label>
-                  <Select onValueChange={handleRdbmsTypeChange}>
+                  <Select value={rdbmsType} onValueChange={handleRdbmsTypeChange}>
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select your RDBMS" />
+                      <SelectValue placeholder="Select your RDBMS"/>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -414,7 +449,7 @@ export default function Home() {
               <CardFooter>
                 <div>
                   <Button onClick={() => {
-                    setDialogOpen(true);
+                    setSchemaPreview(true);
                     getMongoSchema();
                     getRdbmsSchema();
                   }}>
@@ -430,7 +465,80 @@ export default function Home() {
           </TabsContent>
         </Tabs>
 
-        <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={isSchemaPreview} onOpenChange={setSchemaPreview}>
+          <DialogContent
+            className="sm:max-w-[950px]"
+            onEscapeKeyDown={(event) => event.preventDefault()}
+            onPointerDownOutside={(event) => event.preventDefault()}
+            >
+            <DialogHeader>
+              <DialogTitle>Transformation Result</DialogTitle>
+            </DialogHeader>
+
+            <div className="flex py-4">
+              <div className="flex-1 pr-4">
+                <Label htmlFor="name" className="text-right">
+                  MongoDB Source Schema
+                </Label>
+                <div className="py-2">
+                  <Textarea
+                    value={mongoSchema}
+                    onChange={(e) => setMongoSchema(e.target.value)}
+                    readOnly
+                    style={{
+                      height: "250px",
+                      fontFamily: "Consolas, monospace",
+                      fontSize: "14px",
+                      backgroundColor: "#f4f4f4",
+                      color: "#333",
+                      border: "1px solid #ddd",
+                      borderRadius: "5px",
+                      padding: "10px",
+                      whiteSpace: "pre-wrap",
+                      overflowX: "auto"
+                    }}
+                    placeholder="Generating schema..."
+                  />
+                </div>
+              </div>
+
+              <div className="border-l border-gray-300 mx-4" style={{ height: 'auto' }}></div>
+
+              <div className="flex-1 pl-4">
+                <Label htmlFor="email" className="text-right">
+                  RDBMS Schema Transformation Results
+                </Label>
+                <div className="py-2">
+                  <Textarea
+                    value={rdbmsSchema}
+                    onChange={(e) => setRdbmsSchema(e.target.value)}
+                    readOnly
+                    style={{
+                      height: "250px",
+                      fontFamily: "Consolas, monospace",
+                      fontSize: "14px",
+                      backgroundColor: "#f4f4f4",
+                      color: "#333",
+                      border: "1px solid #ddd",
+                      borderRadius: "5px",
+                      padding: "10px",
+                      whiteSpace: "pre-wrap",
+                      overflowX: "auto"
+                    }}
+                    placeholder="Generating schema..."
+                  />
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setSchemaPreview(false)}>
+                  Start Data Migration
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent
             className="sm:max-w-[950px]"
             onEscapeKeyDown={(event) => event.preventDefault()}
@@ -501,7 +609,8 @@ export default function Home() {
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
+
       </div>
     </div>
   );
