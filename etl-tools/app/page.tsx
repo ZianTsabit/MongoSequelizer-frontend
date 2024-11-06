@@ -1,14 +1,9 @@
 "use client";
 
 import { useState } from "react";
-
 import * as React from "react"
 
-import Image from 'next/image';
-
 import { Button } from "@/components/ui/button"
-
-import { Spinner } from "@/components/ui/spinner"
 
 import {
   Card,
@@ -20,6 +15,18 @@ import {
 } from "@/components/ui/card"
 
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
+import Image from 'next/image';
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -28,8 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 
 import { 
   Tabs, 
@@ -38,19 +44,7 @@ import {
   TabsTrigger 
 } from "@/components/ui/tabs"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-
 import { Textarea } from "@/components/ui/textarea"
-
-import { Separator } from "@/components/ui/separator"
 
 export default function Home() {
 
@@ -60,6 +54,7 @@ export default function Home() {
   const [mongoUser, setMongoUser] = useState("");
   const [mongoPassword, setMongoPassword] = useState("");
   const [mongoSchema, setMongoSchema] = useState("");
+  const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
 
   const [rdbmsType, setRdbmsType] = useState("")
   const [rdbmsHost, setRdbmsHost] = useState("");
@@ -68,18 +63,13 @@ export default function Home() {
   const [rdbmsUser, setRdbmsUser] = useState("");
   const [rdbmsPassword, setRdbmsPassword] = useState("");
   const [rdbmsSchema, setRdbmsSchema] = useState("");
-
-  const [mongoMessage, setMongoMessage] = useState({text: "", success: false});
   const [rdbmsMessage, setRdbmsMessage] = useState({text: "", success: false});
 
-  const [show, setShow] = useState(false)
+  const [isSchemaPreview, setSchemaPreview] = useState(false);
 
   const [loadingMessage, setLoadingMessage] = useState({text: "Schema creation is in progress", success: false});
   const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
   const [etlMessage, setEtlMessage] = useState({text: "", success: false});
-
-  const [isSchemaPreview, setSchemaPreview] = useState(false);
-  const [responseData, setResponseData] = useState(null);
 
   const handleRdbmsTypeChange = (value: string) => {
     setRdbmsType(value);
@@ -455,10 +445,6 @@ export default function Home() {
                   }}>
                     Start Transformation
                   </Button>
-                  <Spinner className="my-2" color='yellow' size="small" show={show}>
-                    {loadingMessage.text && <div className={loadingMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingMessage.text}</div>}
-                  </Spinner>
-                  {schemaMessage.text && <div className={schemaMessage.success ? "text-green-600 text-sm font-semibold my-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
                 </div>
               </CardFooter>
             </Card>
