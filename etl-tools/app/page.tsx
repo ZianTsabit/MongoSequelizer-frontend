@@ -82,7 +82,6 @@ export default function Home() {
   const [responseData, setResponseData] = useState(null);
 
   const handleRdbmsTypeChange = (value: string) => {
-    console.log(value)
     setRdbmsType(value);
   };
 
@@ -97,7 +96,7 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch("http://localhost:5000/api/mongodb/test-connection", {
+            response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}mongodb/test-connection`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -126,7 +125,7 @@ export default function Home() {
         }
         if (valid) {
           try {
-            response = await fetch(`http://localhost:5000/api/rdbms/test-connection?rdbms_type=${rdbmsType}`, {
+            response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}rdbms/test-connection?rdbms_type=${rdbmsType}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -142,48 +141,6 @@ export default function Home() {
             setRdbmsMessage({
               ...rdbmsMessage,
               text: "connection failed", 
-              success: false});
-          }
-        }
-        break;
-      case "TransformSchema":
-        if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword || !rdbmsType || !rdbmsHost || !rdbmsPort || !rdbmsDatabase || !rdbmsUser || !rdbmsPassword) {
-          valid = false;
-          alert("Please fill in all required fields for PostgreSQL.");
-        }
-        if (valid) {
-          try {
-            response = await fetch("http://localhost:8000/generate-schema-from-mongo-to-postgres", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                mongo_host: mongoHost,
-                mongo_port: mongoPort,
-                mongo_database: mongoDatabase,
-                mongo_user: mongoUser,
-                mongo_password: mongoPassword,
-                rdbms_type: rdbmsType, 
-                postgre_host: rdbmsHost, 
-                postgre_port: rdbmsPort, 
-                postgre_database: rdbmsDatabase, 
-                postgre_user: rdbmsUser, 
-                postgre_password: rdbmsPassword
-                
-              }),
-            });
-            result = await response.json();
-            setShow((pre) => !pre);
-            setSchemaMessage({
-              ...schemaMessage,
-              text: result.message, 
-              success: result.success});
-          } catch (error) {
-            setShow((pre) => !pre);
-            setSchemaMessage({
-              ...schemaMessage,
-              text: result.message, 
               success: false});
           }
         }
@@ -207,7 +164,7 @@ export default function Home() {
     }
 
     try {
-      response = await fetch(`http://localhost:5000/api/rdbms/display-schema?rdbms_type=${rdbmsType}`, {
+      response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}rdbms/display-schema?rdbms_type=${rdbmsType}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -251,7 +208,7 @@ export default function Home() {
     }
 
     try {
-      response = await fetch("http://localhost:5000/api/mongodb/display-schema", {
+      response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}mongodb/display-schema`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
