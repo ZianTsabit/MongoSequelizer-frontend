@@ -37,6 +37,8 @@ import {
 
 import { Separator } from "@/components/ui/separator"
 
+import { Spinner } from '@/components/ui/spinner';
+
 import { 
   Tabs, 
   TabsContent, 
@@ -45,6 +47,7 @@ import {
 } from "@/components/ui/tabs"
 
 import { Textarea } from "@/components/ui/textarea"
+import { CheckCheckIcon, CheckIcon, Circle, CrossIcon, XIcon } from "lucide-react";
 
 export default function Home() {
 
@@ -66,10 +69,15 @@ export default function Home() {
   const [rdbmsMessage, setRdbmsMessage] = useState({text: "", success: false});
 
   const [isSchemaPreview, setSchemaPreview] = useState(false);
+  const [isMigrating, setMigrating] = useState(false);
 
-  const [loadingMessage, setLoadingMessage] = useState({text: "Schema creation is in progress", success: false});
-  const [schemaMessage, setSchemaMessage] = useState({text: "", success: false});
-  const [etlMessage, setEtlMessage] = useState({text: "", success: false});
+  const [show, setShow] = useState(true)
+
+  const [loadingSchemaMessage, setLoadingSchemaMessage] = useState({text: "Schema creation is currently in progress...", success: false});
+  const [schemaMessage, setSchemaMessage] = useState({text: "The schema was created successfully", success: true});
+
+  const [loadingEtlMessage, setLoadingEtlMessage] = useState({text: "Data loading is currently in progress...", success: false});
+  const [etlMessage, setEtlMessage] = useState({text: "Data was loaded successfully", success: true});
 
   const handleRdbmsTypeChange = (value: string) => {
     setRdbmsType(value);
@@ -219,6 +227,66 @@ export default function Home() {
       setRdbmsSchema(result);
     } catch (error) {
       console.error("Error fetching MongoDB schema:", error);
+    }
+  };
+
+  const implementRdbmsSchema = async () => {
+    let response, result;
+
+    if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
+      alert("Please fill in all required fields for MongoDB.");
+      return;
+    }
+
+    if (!rdbmsType || !rdbmsHost || !rdbmsPort || !rdbmsDatabase || !rdbmsUser || !rdbmsPassword) {
+      alert("Please fill in all required fields for RDBMS.");
+      return;
+    }
+
+    try {
+      response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}rdbms/implement-schema?rdbms_type=${rdbmsType}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "rdbms":{
+            host: rdbmsHost,
+            port: rdbmsPort,
+            db: rdbmsDatabase,
+            username: rdbmsUser,
+            password: rdbmsPassword,
+          },
+          "mongodb":{
+            host: mongoHost,
+            port: mongoPort,
+            db: mongoDatabase,
+            username: mongoUser,
+            password: mongoPassword,
+          }
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to fetch MongoDB schema:", response.statusText);
+        return;
+      }
+
+      result = await response.json();
+
+      setSchemaMessage({
+        ...schemaMessage,
+        text: "The schema was implemented successfully.",
+        success: true});
+
+    } catch (error) {
+      console.error("Error fetching MongoDB schema:", error);
+
+      setSchemaMessage({
+        ...schemaMessage,
+        text: "Failed to implement schema",
+        success: false});
+
     }
   };
 
@@ -458,7 +526,7 @@ export default function Home() {
             onPointerDownOutside={(event) => event.preventDefault()}
             >
             <DialogHeader>
-              <DialogTitle>Transformation Result</DialogTitle>
+              <DialogTitle>Data Transformation</DialogTitle>
             </DialogHeader>
 
             <div className="flex py-4">
@@ -517,85 +585,71 @@ export default function Home() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={() => setSchemaPreview(false)}>
+              <Button onClick={() => {
+                setSchemaPreview(false);
+                setMigrating(true);
+              }}>
                   Start Data Migration
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={isMigrating} onOpenChange={setMigrating}>
           <DialogContent
-            className="sm:max-w-[950px]"
+            className="sm:max-w-[650px]"
             onEscapeKeyDown={(event) => event.preventDefault()}
             onPointerDownOutside={(event) => event.preventDefault()}
             >
             <DialogHeader>
-              <DialogTitle>Transformation Result</DialogTitle>
+              <DialogTitle>Data Migration</DialogTitle>
             </DialogHeader>
 
-            <div className="flex py-4">
-              <div className="flex-1 pr-4">
-                <Label htmlFor="name" className="text-right">
-                  MongoDB Source Schema
-                </Label>
-                <div className="py-2">
-                  <Textarea
-                    value={mongoSchema}
-                    onChange={(e) => setMongoSchema(e.target.value)}
-                    readOnly
-                    style={{
-                      height: "250px",
-                      fontFamily: "Consolas, monospace",
-                      fontSize: "14px",
-                      backgroundColor: "#f4f4f4",
-                      color: "#333",
-                      border: "1px solid #ddd",
-                      borderRadius: "5px",
-                      padding: "10px",
-                      whiteSpace: "pre-wrap",
-                      overflowX: "auto"
-                    }}
-                    placeholder="Generating schema..."
-                  />
+            <div className="py-2">
+              <div className="py-1">
+                <div className="flex items-center">
+                  <Circle color='gray'/>
+                  {schemaMessage.text && <div className={schemaMessage.success ? "text-gray-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
+                </div>
+                <Spinner color='yellow' size="small" show={show}>
+                  {loadingSchemaMessage.text && <div className={loadingSchemaMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingSchemaMessage.text}</div>}
+                </Spinner>
+                <div className="flex items-center">
+                  <CheckIcon color='green'/>
+                  {schemaMessage.text && <div className={schemaMessage.success ? "text-green-800 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
+                </div>
+                <div className="flex items-center">
+                  <XIcon color='red'/>
+                  {schemaMessage.text && <div className={schemaMessage.success ? "text-red-600 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
                 </div>
               </div>
 
-              <div className="border-l border-gray-300 mx-4" style={{ height: 'auto' }}></div>
-
-              <div className="flex-1 pl-4">
-                <Label htmlFor="email" className="text-right">
-                  RDBMS Schema Transformation Results
-                </Label>
-                <div className="py-2">
-                  <Textarea
-                    value={rdbmsSchema}
-                    onChange={(e) => setRdbmsSchema(e.target.value)}
-                    readOnly
-                    style={{
-                      height: "250px",
-                      fontFamily: "Consolas, monospace",
-                      fontSize: "14px",
-                      backgroundColor: "#f4f4f4",
-                      color: "#333",
-                      border: "1px solid #ddd",
-                      borderRadius: "5px",
-                      padding: "10px",
-                      whiteSpace: "pre-wrap",
-                      overflowX: "auto"
-                    }}
-                    placeholder="Generating schema..."
-                  />
+              <div className="py-1">
+                <div className="flex items-center">
+                  <Circle color='gray'/>
+                  {etlMessage.text && <div className={etlMessage.success ? "text-gray-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{etlMessage.text}</div>}
+                </div>
+                <Spinner color='yellow' size="small" show={show}>
+                  {loadingEtlMessage.text && <div className={loadingEtlMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingEtlMessage.text}</div>}
+                </Spinner>
+                <div className="flex items-center">
+                  <CheckIcon color='green'/>
+                  {etlMessage.text && <div className={etlMessage.success ? "text-green-800 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{etlMessage.text}</div>}
+                </div>
+                <div className="flex items-center">
+                  <XIcon color='red'/>
+                  {etlMessage.text && <div className={etlMessage.success ? "text-red-600 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{etlMessage.text}</div>}
                 </div>
               </div>
             </div>
+
             <DialogFooter>
-              <Button onClick={() => setDialogOpen(false)}>
-                  Start Data Migration
+              <Button onClick={() => setMigrating(false)}>
+                  Done
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog> */}
+        </Dialog>
 
       </div>
     </div>
