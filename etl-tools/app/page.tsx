@@ -104,12 +104,10 @@ export default function Home() {
               body: JSON.stringify({ host: mongoHost, port: mongoPort, db: mongoDatabase, username: mongoUser, password: mongoPassword }),
             });
             result = await response.json();
-            console.log(result)
             setMongoMessage({
               ...mongoMessage,
               text: result.message, 
               success: result.status});
-            console.log(mongoMessage)
           } catch (error) {
             setMongoMessage({
               ...mongoMessage,
@@ -226,9 +224,7 @@ export default function Home() {
         console.error("Failed to fetch MongoDB schema:", response.statusText);
         return;
       }
-
       result = await response.json();
-      console.log(result);
       setMongoSchema(JSON.stringify(result, null, 2));
     } catch (error) {
       console.error("Error fetching MongoDB schema:", error);
