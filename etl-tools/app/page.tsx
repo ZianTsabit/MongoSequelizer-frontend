@@ -248,8 +248,15 @@ export default function Home() {
 
   const implementRdbmsSchema = async () => {
     let response, result;
-    setShowSchemaPending(false);
-    setShowSchemaLoading(true);
+  
+    setTimeout(() => {
+      setShowSchemaPending(false);
+    }, 500);
+
+    setTimeout(() => {
+      setShowSchemaLoading(true);
+    }, 500);
+    
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
       alert("Please fill in all required fields for MongoDB.");
@@ -292,13 +299,20 @@ export default function Home() {
 
       result = await response.json();
 
-      setShowSchemaLoading(false);
-      setShowSchemaSuccess(true);
+      setTimeout(() => {
+        setShowSchemaLoading(false);
+      }, 500);
+
+      setTimeout(() => {
+        setShowSchemaSuccess(true);
+      }, 500);
 
     } catch (error) {
       console.error("Error fetching MongoDB schema:", error);
 
-      setShowSchemaFailed(true);
+      setTimeout(() => {
+        setShowSchemaFailed(true);
+      }, 500);
 
     }
   };
