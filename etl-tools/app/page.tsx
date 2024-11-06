@@ -71,13 +71,29 @@ export default function Home() {
   const [isSchemaPreview, setSchemaPreview] = useState(false);
   const [isMigrating, setMigrating] = useState(false);
 
-  const [show, setShow] = useState(true)
-
+  const [showSchemaPending, setShowSchemaPending] = useState(true)
+  const [pendingSchemaMessage, setPendingSchemaMessage] = useState({text: "Schema creation has not started yet", success: false});
+  
+  const [showSchemaLoading, setShowSchemaLoading] = useState(false)
   const [loadingSchemaMessage, setLoadingSchemaMessage] = useState({text: "Schema creation is currently in progress...", success: false});
-  const [schemaMessage, setSchemaMessage] = useState({text: "The schema was created successfully", success: true});
 
+  const [showSchemaSuccess, setShowSchemaSuccess] = useState(false)
+  const [successSchemaMessage, setSuccessSchemaMessage] = useState({text: "The schema was created successfully", success: false});
+
+  const [showSchemaFailed, setShowSchemaFailed] = useState(false)
+  const [failedSchemaMessage, setFailedSchemaMessage] = useState({text: "Failed to create schema", success: false});
+
+  const [showEtlPending, setShowEtlPending] = useState(true)
+  const [pendingEtlMessage, setPendingEtlMessage] = useState({text: "Data loading has not started yet", success: false});
+  
+  const [showEtlLoading, setShowEtlLoading] = useState(false)
   const [loadingEtlMessage, setLoadingEtlMessage] = useState({text: "Data loading is currently in progress...", success: false});
-  const [etlMessage, setEtlMessage] = useState({text: "Data was loaded successfully", success: true});
+
+  const [showEtlSuccess, setShowEtlSuccess] = useState(false)
+  const [successEtlMessage, setSuccessEtlMessage] = useState({text: "Data was loaded successfully", success: false});
+
+  const [showEtlFailed, setShowEtlFailed] = useState(false)
+  const [failedEtlMessage, setFailedEtlMessage] = useState({text: "Failed to load data", success: false});
 
   const handleRdbmsTypeChange = (value: string) => {
     setRdbmsType(value);
@@ -233,6 +249,8 @@ export default function Home() {
   const implementRdbmsSchema = async () => {
     let response, result;
 
+    setShowSchemaLoading(true);
+
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
       alert("Please fill in all required fields for MongoDB.");
       return;
@@ -274,18 +292,12 @@ export default function Home() {
 
       result = await response.json();
 
-      setSchemaMessage({
-        ...schemaMessage,
-        text: "The schema was implemented successfully.",
-        success: true});
+      setShowSchemaSuccess(true);
 
     } catch (error) {
       console.error("Error fetching MongoDB schema:", error);
 
-      setSchemaMessage({
-        ...schemaMessage,
-        text: "Failed to implement schema",
-        success: false});
+      setShowSchemaFailed(true);
 
     }
   };
@@ -606,41 +618,79 @@ export default function Home() {
             </DialogHeader>
 
             <div className="py-2">
+
               <div className="py-1">
-                <div className="flex items-center">
-                  <Circle color='gray'/>
-                  {schemaMessage.text && <div className={schemaMessage.success ? "text-gray-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
-                </div>
-                <Spinner color='yellow' size="small" show={show}>
-                  {loadingSchemaMessage.text && <div className={loadingSchemaMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingSchemaMessage.text}</div>}
+
+                {showSchemaPending && (
+                  <div className="flex items-center">
+                    <Circle color="gray" />
+                    {pendingSchemaMessage.text && (
+                      <div className='text-gray-500 text-sm font-semibold ml-2'>
+                        {pendingSchemaMessage.text}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <Spinner color='yellow' size="small" show={showSchemaLoading}>
+                  {loadingSchemaMessage.text && <div className={loadingSchemaMessage.success ? "text-yellow-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingSchemaMessage.text}</div>}
                 </Spinner>
-                <div className="flex items-center">
-                  <CheckIcon color='green'/>
-                  {schemaMessage.text && <div className={schemaMessage.success ? "text-green-800 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
-                </div>
-                <div className="flex items-center">
-                  <XIcon color='red'/>
-                  {schemaMessage.text && <div className={schemaMessage.success ? "text-red-600 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{schemaMessage.text}</div>}
-                </div>
+                
+                {showSchemaSuccess && (
+                  <div className="flex items-center">
+                    <CheckIcon color="green" />
+                    <div className="text-green-800 text-sm font-semibold ml-2">
+                      {successSchemaMessage.text}
+                    </div>
+                  </div>
+                )}
+
+                {showSchemaFailed && (
+                  <div className="flex items-center">
+                    <XIcon color="red" />
+                    <div className="text-red-600 text-sm font-semibold ml-2">
+                      {failedSchemaMessage.text}
+                    </div>
+                  </div>
+                )}
+
               </div>
 
               <div className="py-1">
-                <div className="flex items-center">
-                  <Circle color='gray'/>
-                  {etlMessage.text && <div className={etlMessage.success ? "text-gray-500 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{etlMessage.text}</div>}
-                </div>
-                <Spinner color='yellow' size="small" show={show}>
-                  {loadingEtlMessage.text && <div className={loadingEtlMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-yellow-500 text-sm font-semibold ml-2"}>{loadingEtlMessage.text}</div>}
+
+                {showEtlPending && (
+                  <div className="flex items-center">
+                    <Circle color="gray" />
+                    <div className="text-gray-500 text-sm font-semibold ml-2">
+                      {pendingEtlMessage.text}
+                    </div>
+                  </div>
+                )}
+
+                <Spinner color='yellow' size="small" show={showEtlLoading}>
+                  <div className="text-yellow-600 text-sm font-semibold ml-2">{loadingEtlMessage.text}</div>
                 </Spinner>
-                <div className="flex items-center">
-                  <CheckIcon color='green'/>
-                  {etlMessage.text && <div className={etlMessage.success ? "text-green-800 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{etlMessage.text}</div>}
-                </div>
-                <div className="flex items-center">
-                  <XIcon color='red'/>
-                  {etlMessage.text && <div className={etlMessage.success ? "text-red-600 text-sm font-semibold ml-2" : "text-red-500 text-sm font-semibold my-2"}>{etlMessage.text}</div>}
-                </div>
+
+                {showEtlSuccess && (
+                  <div className="flex items-center">
+                    <CheckIcon color="green" />
+                    <div className="text-green-800 text-sm font-semibold ml-2">
+                      {successEtlMessage.text}
+                    </div>
+                  </div>
+                )}
+
+                {showEtlFailed && (
+                  <div className="flex items-center">
+                    <XIcon color="red" />
+                    <div className="text-red-600 text-sm font-semibold ml-2">
+                      {failedEtlMessage.text}
+                    </div>
+                  </div>
+                )}
+
               </div>
+
             </div>
 
             <DialogFooter>
