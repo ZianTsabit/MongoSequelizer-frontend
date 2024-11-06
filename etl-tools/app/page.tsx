@@ -248,7 +248,7 @@ export default function Home() {
 
   const implementRdbmsSchema = async () => {
     let response, result;
-
+    setShowSchemaPending(false);
     setShowSchemaLoading(true);
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
@@ -292,6 +292,7 @@ export default function Home() {
 
       result = await response.json();
 
+      setShowSchemaLoading(false);
       setShowSchemaSuccess(true);
 
     } catch (error) {
@@ -600,6 +601,7 @@ export default function Home() {
               <Button onClick={() => {
                 setSchemaPreview(false);
                 setMigrating(true);
+                implementRdbmsSchema();
               }}>
                   Start Data Migration
               </Button>
