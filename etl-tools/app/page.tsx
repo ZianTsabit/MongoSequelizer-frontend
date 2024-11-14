@@ -309,7 +309,11 @@ export default function Home() {
 
     } catch (error) {
       console.error("Error fetching MongoDB schema:", error);
-
+      
+      setTimeout(() => {
+        setShowSchemaLoading(false);
+      }, 500);
+      
       setTimeout(() => {
         setShowSchemaFailed(true);
       }, 500);
