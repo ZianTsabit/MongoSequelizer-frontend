@@ -51,6 +51,7 @@ import { CheckCheckIcon, CheckIcon, Circle, CrossIcon, XIcon } from "lucide-reac
 
 export default function Home() {
 
+  const [nosqlType, setNosqlType] = useState("")
   const [mongoHost, setMongoHost] = useState("");
   const [mongoPort, setMongoPort] = useState("");
   const [mongoDatabase, setMongoDatabase] = useState("");
@@ -99,6 +100,10 @@ export default function Home() {
     setRdbmsType(value);
   };
 
+  const handleNosqlTypeChange = (value: string) => {
+    setNosqlType(value);
+  };
+
   const handleSubmit = async (tab: string) => {
     let valid = true;
     let response, result;
@@ -106,7 +111,7 @@ export default function Home() {
       case "MongoDB":
         if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
           valid = false;
-          alert("Please fill in all required fields for MongoDB.");
+          alert("Please fill in all required fields for NoSQL Doc-Oriented.");
         }
         if (valid) {
           try {
@@ -134,7 +139,7 @@ export default function Home() {
           } catch (error) {
             setMongoMessage({
               ...mongoMessage,
-              text: "Error connecting to MongoDB", 
+              text: "Error connecting to NoSQL Doc-Oriented Database",
               success: false});
 
             setTimeout(() => {
@@ -201,7 +206,7 @@ export default function Home() {
     let response, result;
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
-      alert("Please fill in all required fields for MongoDB.");
+      alert("Please fill in all required fields for NoSQL Doc-Oriented.");
       return;
     }
 
@@ -235,14 +240,14 @@ export default function Home() {
       });
   
       if (!response.ok) {
-        console.error("Failed to fetch MongoDB schema:", response.statusText);
+        console.error("Failed to fetch NoSQL schema:", response.statusText);
         return;
       }
 
       result = await response.json();
       setRdbmsSchema(result);
     } catch (error) {
-      console.error("Error fetching MongoDB schema:", error);
+      console.error("Error fetching NoSQL schema:", error);
     }
   };
 
@@ -259,7 +264,7 @@ export default function Home() {
     
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
-      alert("Please fill in all required fields for MongoDB.");
+      alert("Please fill in all required fields for NoSQL.");
       return;
     }
 
@@ -293,7 +298,7 @@ export default function Home() {
       });
   
       if (!response.ok) {
-        console.error("Failed to fetch MongoDB schema:", response.statusText);
+        console.error("Failed to fetch NoSQL schema:", response.statusText);
         return;
       }
 
@@ -308,7 +313,7 @@ export default function Home() {
       }, 500);
 
     } catch (error) {
-      console.error("Error fetching MongoDB schema:", error);
+      console.error("Error fetching NoSQL schema:", error);
       
       setTimeout(() => {
         setShowSchemaLoading(false);
@@ -325,7 +330,7 @@ export default function Home() {
     let response, result;
 
     if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
-      alert("Please fill in all required fields for MongoDB.");
+      alert("Please fill in all required fields for NoSQL.");
       return;
     }
 
@@ -345,13 +350,13 @@ export default function Home() {
       });
   
       if (!response.ok) {
-        console.error("Failed to fetch MongoDB schema:", response.statusText);
+        console.error("Failed to fetch NoSQL schema:", response.statusText);
         return;
       }
       result = await response.json();
       setMongoSchema(JSON.stringify(result, null, 2));
     } catch (error) {
-      console.error("Error fetching MongoDB schema:", error);
+      console.error("Error fetching NoSQL schema:", error);
     }
   };
 
@@ -360,9 +365,9 @@ export default function Home() {
     <div className="w-full h-screen flex justify-center mt-40">
       <div>
         <Tabs defaultValue="MongoDB" className="w-[400px]">
-          
+
           <TabsList className="w-full">
-            <TabsTrigger value="MongoDB">MongoDB</TabsTrigger>
+            <TabsTrigger value="MongoDB">NoSQL</TabsTrigger>
             <TabsTrigger value="RDBMS">RDBMS</TabsTrigger>
             <TabsTrigger value="Evaluate">Evaluate</TabsTrigger>
           </TabsList>
@@ -371,23 +376,42 @@ export default function Home() {
             <Card >
               <CardHeader className="py-3 px-6">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Image
-                    src="/assets/mongodb-logo.png"
-                    alt="MongoDB"
-                    width={40}
-                    height={40}
-                    style={{ marginRight: '8px' }}
-                  />
-                  <CardTitle>MongoDB</CardTitle>
+                  <CardTitle>NoSQL Doc-Oriented</CardTitle>
                 </div>
                 <CardDescription>
-                  Configuration for MongoDB Source
+                  Configuration for NoSQL Doc-Oriented Source
                 </CardDescription>
               </CardHeader>
               <div className="mx-6 mb-2">
                 <Separator />
               </div>
               <CardContent className="space-y-2">
+
+                <div className="space-y-1">
+                    <Label htmlFor="rdbms-type">Type</Label>
+                    <Select value={nosqlType} onValueChange={handleNosqlTypeChange}>
+                      <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="Select your NoSQL Doc-Oriented"/>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="mongodb">
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <Image
+                                src="/assets/mongodb-logo.png"
+                                alt="MongoDB"
+                                width={20}
+                                height={20}
+                                style={{ marginRight: '8px' }}
+                              />
+                              MongoDB
+                            </div>
+                            </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                 <div className="space-y-1">
                   <Label htmlFor="mongo-host">Host</Label>
                   <Input id="mongo-host" placeholder="localhost" value={mongoHost} onChange={(e) => setMongoHost(e.target.value)} required/>
@@ -422,13 +446,6 @@ export default function Home() {
             <Card>
               <CardHeader className="py-3 px-6">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Image
-                    src="/assets/rdbms-logo.png"
-                    alt="RDBMS"
-                    width={40}
-                    height={40}
-                    style={{ marginRight: '8px' }}
-                  />
                   <CardTitle>RDBMS</CardTitle>
                 </div>
                 <CardDescription>
@@ -517,7 +534,8 @@ export default function Home() {
               </div>
               <CardContent className="space-y-4">
               <div className="space-y-1">
-                <Label className="text-lg">MongoDB Configuration</Label>
+                <Label className="text-lg">NoSQL Doc-Oriented Configuration</Label>
+                <p><strong>Type:</strong> {nosqlType}</p>
                 <p><strong>Host:</strong> {mongoHost}</p>
                 <p><strong>Port:</strong> {mongoPort}</p>
                 <p><strong>DB:</strong> {mongoDatabase}</p>
@@ -563,7 +581,7 @@ export default function Home() {
             <div className="flex py-4">
               <div className="flex-1 pr-4">
                 <Label htmlFor="name" className="text-right">
-                  MongoDB Source Schema
+                  NoSQL Doc-Oriented Source Schema
                 </Label>
                 <div className="py-2">
                   <Textarea
