@@ -326,6 +326,81 @@ export default function Home() {
     }
   };
 
+  const migrateData = async () => {
+    let response, result;
+  
+    setTimeout(() => {
+      setShowEtlPending(false);
+    }, 500);
+
+    setTimeout(() => {
+      setShowEtlLoading(true);
+    }, 500);
+    
+
+    if (!mongoHost || !mongoPort || !mongoDatabase || !mongoUser || !mongoPassword) {
+      alert("Please fill in all required fields for NoSQL.");
+      return;
+    }
+
+    if (!rdbmsType || !rdbmsHost || !rdbmsPort || !rdbmsDatabase || !rdbmsUser || !rdbmsPassword) {
+      alert("Please fill in all required fields for RDBMS.");
+      return;
+    }
+
+    try {
+      response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}rdbms/migrate-data?rdbms_type=${rdbmsType}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "rdbms":{
+            host: rdbmsHost,
+            port: rdbmsPort,
+            db: rdbmsDatabase,
+            username: rdbmsUser,
+            password: rdbmsPassword,
+          },
+          "mongodb":{
+            host: mongoHost,
+            port: mongoPort,
+            db: mongoDatabase,
+            username: mongoUser,
+            password: mongoPassword,
+          }
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to migrate data:", response.statusText);
+        return;
+      }
+
+      result = await response.json();
+
+      setTimeout(() => {
+        setShowEtlLoading(false);
+      }, 500);
+
+      setTimeout(() => {
+        setShowEtlSuccess(true);
+      }, 500);
+
+    } catch (error) {
+      console.error("Error migrating data:", error);
+      
+      setTimeout(() => {
+        setShowEtlLoading(false);
+      }, 500);
+      
+      setTimeout(() => {
+        setShowEtlFailed(true);
+      }, 500);
+
+    }
+  };
+
   const getMongoSchema = async () => {
     let response, result;
 
@@ -637,7 +712,9 @@ export default function Home() {
               <Button onClick={() => {
                 setSchemaPreview(false);
                 setMigrating(true);
-                implementRdbmsSchema();
+                implementRdbmsSchema().then(() => {
+                  migrateData();
+                });
               }}>
                   Start Data Migration
               </Button>
