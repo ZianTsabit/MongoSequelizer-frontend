@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/tabs"
 
 import { Textarea } from "@/components/ui/textarea"
-import { CheckCheckIcon, CheckIcon, Circle, CrossIcon, XIcon } from "lucide-react";
+import { CheckIcon, Circle, XIcon } from "lucide-react";
 
 export default function Home() {
 
@@ -451,7 +451,7 @@ export default function Home() {
             <Card >
               <CardHeader className="py-3 px-6">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <CardTitle>NoSQL Doc-Oriented</CardTitle>
+                  <CardTitle>NoSQL Doc-Oriented Database</CardTitle>
                 </div>
                 <CardDescription>
                   Configuration for NoSQL Doc-Oriented Source
@@ -466,7 +466,7 @@ export default function Home() {
                     <Label htmlFor="rdbms-type">Type</Label>
                     <Select value={nosqlType} onValueChange={handleNosqlTypeChange}>
                       <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Select your NoSQL Doc-Oriented"/>
+                        <SelectValue placeholder="Select your NoSQL Database"/>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -510,7 +510,12 @@ export default function Home() {
               </CardContent>
               
               <CardFooter>
-                <Button onClick={() => handleSubmit("MongoDB")}>Save & Test Connection</Button>
+                <Button 
+                  onClick={() => handleSubmit("MongoDB")}
+                  style={{ fontWeight: "bold" }}
+                  >
+                    Save & Test Connection
+                </Button>
                 {mongoMessage.text && <div className={mongoMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{mongoMessage.text}</div>}
               </CardFooter>
               
@@ -590,7 +595,12 @@ export default function Home() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={() => handleSubmit("RDBMS")}>Save & Test Connection</Button>
+                <Button onClick={() => 
+                  handleSubmit("RDBMS")}
+                  style={{ fontWeight: "bold" }}
+                  >
+                    Save & Test Connection
+                </Button>
                 {rdbmsMessage.text && <div className={rdbmsMessage.success ? "text-green-600 text-sm font-semibold ml-2" : "text-red-600 text-sm font-semibold ml-2"}>{rdbmsMessage.text}</div>}
               </CardFooter>
             </Card>
@@ -630,12 +640,15 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 <div>
-                  <Button onClick={() => {
+                  <Button 
+                  onClick={() => {
                     setSchemaPreview(true);
                     getMongoSchema();
                     getRdbmsSchema();
-                  }}>
-                    Start Transformation
+                  }}
+                  style={{ fontWeight: "bold" }}
+                  >
+                    Start Schema Transformation
                   </Button>
                 </div>
               </CardFooter>
@@ -650,7 +663,7 @@ export default function Home() {
             onPointerDownOutside={(event) => event.preventDefault()}
             >
             <DialogHeader>
-              <DialogTitle>Data Transformation</DialogTitle>
+              <DialogTitle>Schema Transformation</DialogTitle>
             </DialogHeader>
 
             <div className="flex py-4">
@@ -709,13 +722,16 @@ export default function Home() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={() => {
-                setSchemaPreview(false);
-                setMigrating(true);
-                implementRdbmsSchema().then(() => {
-                  migrateData();
-                });
-              }}>
+              <Button 
+                onClick={() => {
+                  setSchemaPreview(false);
+                  setMigrating(true);
+                  implementRdbmsSchema().then(() => {
+                    migrateData();
+                  });
+                }}
+                style={{ fontWeight: "bold" }}
+                >
                   Start Data Migration
               </Button>
             </DialogFooter>
@@ -783,7 +799,7 @@ export default function Home() {
                 )}
 
                 <Spinner color='yellow' size="small" show={showEtlLoading}>
-                  <div className="text-yellow-600 text-sm font-semibold ml-2">{loadingEtlMessage.text}</div>
+                  <div className="text-yellow-500 text-sm font-semibold ml-2">{loadingEtlMessage.text}</div>
                 </Spinner>
 
                 {showEtlSuccess && (
@@ -803,16 +819,18 @@ export default function Home() {
                     </div>
                   </div>
                 )}
-
               </div>
-
             </div>
 
             <DialogFooter>
-              <Button onClick={() => setMigrating(false)}>
+              <Button
+                onClick={() => setMigrating(false)}
+                style={{ fontWeight: "bold" }}
+                >
                   Done
               </Button>
             </DialogFooter>
+
           </DialogContent>
         </Dialog>
 
