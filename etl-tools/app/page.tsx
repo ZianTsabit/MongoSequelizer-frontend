@@ -512,7 +512,7 @@ export default function Home() {
               <CardFooter>
                 <Button 
                   onClick={() => handleSubmit("MongoDB")}
-                  style={{ fontWeight: "bold" }}
+                  className="font-semibold"
                   >
                     Save & Test Connection
                 </Button>
@@ -597,7 +597,7 @@ export default function Home() {
               <CardFooter>
                 <Button onClick={() => 
                   handleSubmit("RDBMS")}
-                  style={{ fontWeight: "bold" }}
+                  className="font-semibold"
                   >
                     Save & Test Connection
                 </Button>
@@ -646,7 +646,7 @@ export default function Home() {
                     getMongoSchema();
                     getRdbmsSchema();
                   }}
-                  style={{ fontWeight: "bold" }}
+                  className="font-semibold"
                   >
                     Start Schema Transformation
                   </Button>
@@ -730,7 +730,7 @@ export default function Home() {
                     migrateData();
                   });
                 }}
-                style={{ fontWeight: "bold" }}
+                className="font-semibold"
                 >
                   Start Data Migration
               </Button>
@@ -825,7 +825,7 @@ export default function Home() {
             <DialogFooter>
               <Button
                 onClick={() => setMigrating(false)}
-                style={{ fontWeight: "bold" }}
+                className="font-semibold"
                 >
                   Done
               </Button>
