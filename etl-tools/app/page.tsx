@@ -659,7 +659,6 @@ export default function Home() {
         <Dialog open={isSchemaPreview} onOpenChange={setSchemaPreview}>
           <DialogContent
             className="sm:max-w-[950px]"
-            onEscapeKeyDown={(event) => event.preventDefault()}
             onPointerDownOutside={(event) => event.preventDefault()}
             >
             <DialogHeader>
