@@ -1,1 +1,1 @@
-# ta2-project-frontend
+# MongoSequelizer Frontend Application
